@@ -1,0 +1,925 @@
+local currentPos = "attention"
+local tweenService = game:GetService("TweenService")
+
+local function generateLimbWelds()
+	if script.Parent.Parent:FindFirstChild("UpperTorso") then
+		local NewLimbs = game.ReplicatedStorage.DPRifle.FakeLimbs:Clone()
+		NewLimbs:SetPrimaryPartCFrame(script.Parent.Parent:FindFirstChild("HumanoidRootPart").CFrame)
+		NewLimbs.Parent = script.Parent.Parent
+		local char = script.Parent.Parent
+			 -- R15 to R6 Conversion needs to occur here
+			 -- General idea of it was to put the R15 limbs inside an R6 sized box and then weld it all together, activate as needed to keep the R15 Animations
+		for i,v in pairs(char:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.Anchored = true
+			end
+		end
+		local LHand = Instance.new("Weld")
+		LHand.Parent = NewLimbs["Left Arm"]
+		LHand.Part1 = NewLimbs["Left Arm"]
+		LHand.Part0 = char.LeftHand
+		LHand.C1 = CFrame.new(0,-0.85,0)
+		char.LeftHand.Anchored = false
+		local LUpperA = Instance.new("Weld")
+		LUpperA.Parent = NewLimbs["Left Arm"]
+		LUpperA.Part1 = NewLimbs["Left Arm"]
+		LUpperA.Part0 = char.LeftUpperArm
+		LUpperA.C1 = CFrame.new(0,0.35,0)
+		char.LeftUpperArm.Anchored = false
+		local LLowerA = Instance.new("Weld")
+		LLowerA.Parent = NewLimbs["Left Arm"]
+		LLowerA.Part1 = NewLimbs["Left Arm"]
+		LLowerA.Part0 = char.LeftLowerArm
+		LLowerA.C1 = CFrame.new(0,-0.2,0)
+		char.LeftLowerArm.Anchored = false
+		local UpperTorso = Instance.new("Weld")
+		UpperTorso.Parent = NewLimbs["Torso"]
+		UpperTorso.Part1 = NewLimbs["Torso"]
+		UpperTorso.Part0 = char.UpperTorso
+		UpperTorso.C1 = CFrame.new(0,0.1,0)*CFrame.Angles(0,0,0)
+		local LowerTorso = Instance.new("Weld")
+		LowerTorso.Parent = NewLimbs["Torso"]
+		LowerTorso.Part1 = NewLimbs["Torso"]
+		LowerTorso.Part0 = char.LowerTorso
+		LowerTorso.C1 = CFrame.new(0,-0.6,0)*CFrame.Angles(0,0,0)
+		char.UpperTorso.Anchored = false
+
+	end
+	local larmWeld = Instance.new("Weld")
+	local rarmWeld = Instance.new("Weld")
+	larmWeld.Parent = script
+	rarmWeld.Parent = script
+	larmWeld.Part1 = script.Parent.Parent["Left Arm"]
+	rarmWeld.Part1 = script.Parent.Parent["Right Arm"]
+	larmWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	rarmWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	larmWeld.C1 = CFrame.new(1.5,0,0)
+	rarmWeld.C1 = CFrame.new(-1.5,0,0)
+	rarmWeld.Name = "rarmWeld"
+	larmWeld.Name = "larmWeld"
+	larmWeld.Enabled = false
+	-- Arm Welds Generated
+	local llegWeld = Instance.new("Weld")
+	local rlegWeld = Instance.new("Weld")
+	llegWeld.Parent = script
+	rlegWeld.Parent = script
+	llegWeld.Part1 = script.Parent.Parent["Left Leg"]
+	rlegWeld.Part1 = script.Parent.Parent["Right Leg"]
+	llegWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	rlegWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	llegWeld.C1 = CFrame.new(0.5,2,0)
+	rlegWeld.C1 = CFrame.new(-0.5,2,0)
+	rlegWeld.Name = "rlegWeld"
+	llegWeld.Name = "llegWeld"
+	llegWeld.Enabled = false
+	rlegWeld.Enabled = false
+	-- Leg Welds Generated
+	local torsoWeld = Instance.new("Weld")
+	torsoWeld.Parent = script
+	torsoWeld.Part1 = script.Parent.Parent["Torso"]
+	torsoWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	torsoWeld.Name = "torsoWeld"
+	torsoWeld.Enabled = false
+	torsoWeld.C1 = CFrame.new(0,0,0)
+	
+	local headWeld = Instance.new("Weld")
+	headWeld.Parent = script
+	headWeld.Part1 = script.Parent.Parent["Head"]
+	headWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	headWeld.Name = "headWeld"
+	headWeld.Enabled = false
+	headWeld.C1 = CFrame.new(0,-1.5,0)
+end
+
+local function atease_Start()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(0.1)
+	local llegTweenGoal = {C1 = CFrame.new(0.4,2,0)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(5))}
+	local rlegTweenGoal = {C1 = CFrame.new(-0.4,2,0)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(-5))}
+	local llegTween = tweenService:Create(script.llegWeld,tweenInfo,llegTweenGoal)
+	local rlegTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegTweenGoal)
+	script.llegWeld.Enabled = true
+	script.rlegWeld.Enabled = true
+	rlegTween:Play()
+	llegTween:Play()
+	wait(0.1)
+	currentPos = "atease"
+end
+
+local function atease_End()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(0.1)
+	local llegTweenGoal = {C1 = CFrame.new(0.5,2,0)}
+	local rlegTweenGoal = {C1 = CFrame.new(-0.5,2,0)}
+	local llegTween = tweenService:Create(script.llegWeld,tweenInfo,llegTweenGoal)
+	local rlegTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegTweenGoal)
+	rlegTween:Play()
+	llegTween:Play()
+	wait(0.1)
+	script.llegWeld.Enabled = false
+	script.rlegWeld.Enabled = false
+	currentPos = "attention"
+end
+
+local function standeasy_Start()
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(3)
+	local rarmWeldGoal = {C1 = CFrame.new(-0.95,-0.3,0.5)*CFrame.Angles(math.rad(-20),0,math.rad(30))}
+	local larmWeldGoal = {C1 = CFrame.new(0.95,-0.2,0.4)*CFrame.Angles(math.rad(-20),0,math.rad(-30))}
+	local rifleWeldGoal = {C1 = CFrame.new(0.8,0.1,-0.6)*CFrame.Angles(math.rad(-45.278),math.rad(67.374),math.rad(160.461))}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmWeldGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rarmTween:Play()
+	larmTween:Play()
+	rifleTween:Play()
+	wait(3)
+	currentPos = "standeasy"
+end
+
+local function standeasy_End()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(3)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	local larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(3)
+	script.larmWeld.Enabled = false
+	currentPos = "atease"
+end
+
+local function changearms_Shoulder_Left()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.8,1.6)}
+	larmTweenGoal = {C1 = CFrame.new(0.8,0.4,1.2)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(160))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.9,-0.3,0.4)*CFrame.Angles(math.rad(-30),math.rad(-40),math.rad(30))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(1)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(1,-0.69,0.7)}
+	rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.5)
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)}
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rarmTween:Play()
+	wait(0.5)
+	script.rarmWeld.Enabled = false
+	currentPos = "shoulderleft"
+end
+
+local function changearms_Shoulder_Right()
+	currentPos = "moving"
+	script.rarmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rarmTween:Play()
+	wait(0.4)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.8,1.6)}
+	local larmTweenGoal = {C1 = CFrame.new(0.8,0.4,1.2)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(160))}
+	rarmTweenGoal = {C1 = CFrame.new(-0.9,-0.3,0.4)*CFrame.Angles(math.rad(-30),math.rad(-40),math.rad(30))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(1)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.5)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	currentPos = "attention"
+end
+
+local function slopearms_Start()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	tweenInfo = TweenInfo.new(0.4)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.6)
+	tweenInfo = TweenInfo.new(0.3)
+	rifleWeldGoal = {C1 = CFrame.new(0.65,1.6,-0.6)*CFrame.Angles(math.rad(-12),math.rad(55),math.rad(98))}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(5),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	currentPos = "slopearms"
+	script.rarmWeld.Enabled = false
+end
+
+local function slopearms_End()
+	currentPos = "moving"
+	script.rarmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.5)
+	tweenInfo = TweenInfo.new(0.3)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.5)
+	tweenInfo = TweenInfo.new(0.3)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	script.larmWeld.Enabled = false
+	currentPos = "attention"
+end
+
+local function changearms_Slope_Right()
+	script.rarmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.4)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.8,1.6)}
+	larmTweenGoal = {C1 = CFrame.new(0.8,0.4,1.2)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(160))}
+	rarmTweenGoal = {C1 = CFrame.new(-0.9,-0.3,0.4)*CFrame.Angles(math.rad(-30),math.rad(-40),math.rad(30))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(1)
+	local testInfo = TweenInfo.new(0.3)
+	rifleWeldGoal = {C1 = CFrame.new(-0.6,1.6,-0.65)*CFrame.Angles(math.rad(160),math.rad(-125),math.rad(77))}
+	larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	rarmTweenGoal = {C1 = CFrame.new(-1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(-10),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,testInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	rifleWeldGoal = {C1 = CFrame.new(-0.55,1.6,-0.65)*CFrame.Angles(math.rad(165),math.rad(-125),math.rad(77))}
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	rarmTweenGoal = {C1 = CFrame.new(-1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(-5),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	currentPos = "sloperight"
+end
+
+local function changearms_Slope_Left()
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(-0.6,1.6,-0.65)*CFrame.Angles(math.rad(160),math.rad(-125),math.rad(77))}
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(-10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.8,1.6)}
+	larmTweenGoal = {C1 = CFrame.new(0.8,0.4,1.2)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(160))}
+	rarmTweenGoal = {C1 = CFrame.new(-0.9,-0.3,0.4)*CFrame.Angles(math.rad(-30),math.rad(-40),math.rad(30))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(1)
+	rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.4)
+	rifleWeldGoal = {C1 = CFrame.new(0.65,1.6,-0.6)*CFrame.Angles(math.rad(-12),math.rad(55),math.rad(98))}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(5),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	currentPos = "slopearms"
+	script.rarmWeld.Enabled = false
+end
+
+local function presentarms_Start()
+	script.rarmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.4)
+	script.llegWeld.Enabled = true
+	script.rlegWeld.Enabled = true
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.8,1.6)}
+	larmTweenGoal = {C1 = CFrame.new(0.8,0.4,1.2)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(160))}
+	rarmTweenGoal = {C1 = CFrame.new(-0.9,-0.3,0.4)*CFrame.Angles(math.rad(-30),math.rad(-40),math.rad(30))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	
+	wait(0.5)
+	local rlegGoal = {C1 = CFrame.new(-0.5,1.9,0.5)*CFrame.Angles(math.rad(15),math.rad(45),math.rad(0))}
+	local legTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegGoal)
+	tweenInfo = TweenInfo.new(0.15)
+	larmTweenGoal = {C1 = CFrame.new(1.15,-0.3,.5)*CFrame.Angles(math.rad(71.5),math.rad(120.7),math.rad(200))}
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(0,-0.4,1.6)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	legTween:Play()
+	larmTween:Play()
+	rifleTween:Play()
+	currentPos = "presentarms"
+end
+
+local function presentarms_End()
+	local tweenInfo = TweenInfo.new(0.3)
+	local rlegGoal = {C1 = CFrame.new(-0.5,2,0)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(0))}
+	local legTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegGoal)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	legTween:Play()
+	wait(0.4)
+	script.llegWeld.Enabled = false
+	script.rlegWeld.Enabled = false
+	rifleWeldGoal = {C1 = CFrame.new(0.65,1.6,-0.6)*CFrame.Angles(math.rad(-12),math.rad(55),math.rad(98))}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(0),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(5),math.rad(0))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.3)
+	script.rarmWeld.Enabled = false
+	currentPos = "slopearms"
+end
+
+local function slopesalute_Start()
+	currentPos = "moving"
+	script.rarmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(0.75,1.5,-0.55)*CFrame.Angles(math.rad(-10),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(90))}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(10),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.4)
+	rarmTween = {C1 = CFrame.new(-1.5,0,0)}
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rarmTween:Play()
+	wait(0.4)
+	currentPos = "slopesalute"
+end
+
+local function slopesalute_End()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.new(0.65,1.6,-0.6)*CFrame.Angles(math.rad(-12),math.rad(55),math.rad(98))}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	local larmTweenGoal = {C1 = CFrame.new(1.45,0.1,0.1)*CFrame.Angles(math.rad(-35),math.rad(5),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.4)
+	currentPos = "slopearms"
+	script.rarmWeld.Enabled = false
+end
+
+local function highport_Start()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	local rifleWeldGoal = {C1 = CFrame.new(0.3, 1.8, -0.5)*CFrame.Angles(math.rad(-80),math.rad(-20),math.rad(115))}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.35,-0.15,0.2)*CFrame.Angles(math.rad(53),math.rad(-149),math.rad(167))}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0.6,0.1)*CFrame.Angles(math.rad(57),math.rad(-172),math.rad(-165))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	currentPos = "highport"
+end
+
+local function highport_End()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rarmTween:Play()
+	wait(0.5)
+	tweenInfo = TweenInfo.new(0.3)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	script.larmWeld.Enabled = false
+	currentPos = "attention"
+end
+
+local function onguard_Start()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	script.llegWeld.Enabled = true
+	script.rlegWeld.Enabled = true
+	local rlegTweenGoal = {C1 = CFrame.new(-0.5,1.9,0.2)*CFrame.Angles(math.rad(10),math.rad(15),math.rad(-3))}
+	local llegTweenGoal = {C1 = CFrame.new(0.5,1.9,0.6)*CFrame.Angles(math.rad(7.5),math.rad(2),math.rad(0))}
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(10),math.rad(170),math.rad(0))*CFrame.new(-0.945,-0.028,1.34)}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.35,-0.1,-0.2)*CFrame.Angles(math.rad(-50),math.rad(-16),math.rad(-11))}
+	larmTweenGoal = {C1 = CFrame.Angles(math.rad(-12.2),math.rad(27.6),math.rad(-68))*CFrame.new(0.15,-0.35,1.13)}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local rlegTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegTweenGoal)
+	local llegTween = tweenService:Create(script.llegWeld,tweenInfo,llegTweenGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rifleTween:Play()
+	rlegTween:Play()
+	rarmTween:Play()
+	llegTween:Play()
+	larmTween:Play()
+	currentPos = "onguard"
+end
+
+local function onguard_End()
+	currentPos = "moving"
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	local larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	local rlegTweenGoal = {C1 = CFrame.new(-0.5,2,0)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(0))}
+	local llegTweenGoal = {C1 = CFrame.new(0.5,2,0)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(0))}
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rlegTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegTweenGoal)
+	local llegTween = tweenService:Create(script.llegWeld,tweenInfo,llegTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	rlegTween:Play()
+	rarmTween:Play()
+	llegTween:Play()
+	wait(0.5)
+	tweenInfo = TweenInfo.new(0.3)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	script.larmWeld.Enabled = false
+	script.llegWeld.Enabled = false
+	script.rlegWeld.Enabled = false
+	currentPos = "attention"
+end
+
+local function volley_Start()
+	currentPos = "moving"
+	onguard_Start()
+	local tweenInfo = TweenInfo.new(0.24)
+	local larmTweenGoal = {C1 = CFrame.Angles(math.rad(-12.2),math.rad(17.6),math.rad(-68))*CFrame.new(0.15,-0.35,1.13)}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	script.Parent.Bolt.SlidePull:Play()
+	wait(0.8)
+	larmTweenGoal = {C1 = CFrame.Angles(math.rad(-12.2),math.rad(27.6),math.rad(-68))*CFrame.new(0.15,-0.35,1.13)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	script.Parent.Bolt.SlideRelease:Play()
+	wait(0.5)
+	script.headWeld.Enabled = true
+	script.torsoWeld.Enabled = true
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(15),math.rad(170),math.rad(-10))*CFrame.new(-0.6,-0.8,1.8)}
+	local rarmTweenGoal = {C1 = CFrame.Angles(math.rad(-100),math.rad(-15),math.rad(-10))*CFrame.new(-1.3,-0.6,0.6)}
+	larmTweenGoal = {C1 = CFrame.Angles(math.rad(-110),math.rad(35),math.rad(10))*CFrame.new(0.35,-0.8,1.2)}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local torsoGoal = {C1 = CFrame.Angles(math.rad(-5),0,0)}
+	local headGoal = {C1 = CFrame.Angles(math.rad(-15),0,0)*CFrame.new(0,-1.45,0)}
+	local torsoTween = tweenService:Create(script.torsoWeld,tweenInfo,torsoGoal)
+	local headTween = tweenService:Create(script.headWeld,tweenInfo,headGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	headTween:Play()
+	torsoTween:Play()
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	currentPos = "volley"
+end
+
+local function volley_Effects()
+	script.Parent.SmokePart.FlashFX.Enabled = true
+	script.Parent.SmokePart["FlashFX[Flash]"].Enabled = true
+	script.Parent.SmokePart.Smoke.Enabled = true
+	script.Parent.grip.Muzzle.FlashFX.Enabled = true
+	script.Parent.grip.Muzzle["FlashFX[Flash]"].Enabled = true
+	script.Parent.grip.Muzzle.Smoke.Enabled = true
+	wait(0.1)
+	script.Parent.SmokePart.FlashFX.Enabled = false
+	script.Parent.SmokePart["FlashFX[Flash]"].Enabled = false
+	script.Parent.SmokePart.Smoke.Enabled = false
+	script.Parent.grip.Muzzle.FlashFX.Enabled = false
+	script.Parent.grip.Muzzle["FlashFX[Flash]"].Enabled = false
+	script.Parent.grip.Muzzle.Smoke.Enabled = false
+end
+
+local function volley_Fire()
+	currentPos = "moving"
+	spawn(volley_Effects)
+	script.Parent.grip.Fire:Play()
+	wait(0.3)
+	currentPos = "volley"
+end
+
+local function volley_End()
+	local tweenInfo = TweenInfo.new(0.3)
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(10),math.rad(170),math.rad(0))*CFrame.new(-0.945,-0.028,1.34)}
+	local rarmTweenGoal = {C1 = CFrame.new(-1.35,-0.1,-0.2)*CFrame.Angles(math.rad(-50),math.rad(-16),math.rad(-11))}
+	local larmTweenGoal = {C1 = CFrame.Angles(math.rad(-12.2),math.rad(27.6),math.rad(-68))*CFrame.new(0.15,-0.35,1.13)}
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local torsoGoal = {C1 = CFrame.Angles(0,0,0)}
+	local headGoal = {C1 = CFrame.Angles(0,0,0)*CFrame.new(0,-1.5,0)}
+	local torsoTween = tweenService:Create(script.torsoWeld,tweenInfo,torsoGoal)
+	local headTween = tweenService:Create(script.headWeld,tweenInfo,headGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	headTween:Play()
+	torsoTween:Play()
+	rifleTween:Play()
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.6)
+	script.headWeld.Enabled = false
+	script.torsoWeld.Enabled = false
+	onguard_End()
+	currentPos = "attention"
+end
+
+local function fixBayonets()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.3)
+	local larmTweenGoal = {C1 = CFrame.new(0.8,-0.3,-0.2)*CFrame.Angles(math.rad(30),math.rad(-20),math.rad(-30))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.3)
+	tweenInfo = TweenInfo.new(0.45)
+	larmTweenGoal = {C1 = CFrame.new(0.9,1.25,0.7)*CFrame.Angles(math.rad(-10),math.rad(90),math.rad(-130))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.55)
+	script.Parent.Blade1.Transparency = 0
+	script.Parent.Blade2.Transparency = 0
+	tweenInfo = TweenInfo.new(0.1)
+	larmTweenGoal = {C1 = CFrame.new(0.9,1.25,0.7)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-130))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.3)
+	tweenInfo = TweenInfo.new(0.5)
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.55)
+	script.BayonetFixed.Value = true
+	currentPos = "attention"
+end
+
+local function unfixBayonets()
+	currentPos = "moving"
+	script.larmWeld.Enabled = true
+	local tweenInfo = TweenInfo.new(0.4)
+	local larmTweenGoal = {C1 = CFrame.new(0.9,1.25,0.7)*CFrame.Angles(math.rad(-10),math.rad(90),math.rad(-130))}
+	local larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.4)
+	script.rlegWeld.Enabled = true
+	script.llegWeld.Enabled = true
+	local hipheightGoal = {HipHeight = -0.2}
+	local rifleWeldGoal = {C1 = CFrame.Angles(math.rad(50),math.rad(170),math.rad(0))*CFrame.new(0,0.95,0.95)}
+	local rlegTweenGoal = {C1 = CFrame.new(-0.5,1.8,0.5)*CFrame.Angles(math.rad(10),math.rad(0),math.rad(0))}
+	local rarmTweenGoal = {C1 = CFrame.Angles(math.rad(-40),math.rad(-15),math.rad(40))*CFrame.new(-0.65, -0.3, 1)}
+	local llegTweenGoal = {C1 = CFrame.new(0.5,1.8,0.5)*CFrame.Angles(math.rad(10),math.rad(0),math.rad(0))}
+	larmTweenGoal = {C1 = CFrame.Angles(math.rad(-40),math.rad(15),math.rad(-40))*CFrame.new(0.65, -0.4, 1)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	local rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	local hipheightTween = tweenService:Create(script.Parent.Parent.Humanoid,tweenInfo,hipheightGoal)
+	local rlegTween = tweenService:Create(script.rlegWeld,tweenInfo,rlegTweenGoal)
+	local llegTween = tweenService:Create(script.llegWeld,tweenInfo,llegTweenGoal)
+	local rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	rarmTween:Play()
+	larmTween:Play()
+	rlegTween:Play()
+	rifleTween:Play()
+	hipheightTween:Play()
+	llegTween:Play()
+	script.Parent.Parent.Humanoid.HipHeight = -0.2
+	script.Parent.Blade1.Transparency = 1
+	script.Parent.Blade2.Transparency = 1
+	script.BayonetFixed.Value = false
+	wait(0.8)
+	local quickinfo = TweenInfo.new(0.3)
+	tweenInfo = TweenInfo.new(0.6)
+	rarmTweenGoal = {C1 = CFrame.new(-0.7,0,0.375)*CFrame.Angles(math.rad(15),math.rad(-105),math.rad(90))}
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	larmTween = tweenService:Create(script.larmWeld,quickinfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rarmTween:Play()
+	larmTween:Play()
+	wait(0.2)
+	larmTweenGoal = {C1 = CFrame.new(0.8,-0.3,-0.2)*CFrame.Angles(math.rad(30),math.rad(-20),math.rad(-30))}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(1.3)
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rarmTween:Play()
+	wait(0.6)
+	larmTweenGoal = {C1 = CFrame.Angles(math.rad(-40),math.rad(15),math.rad(-40))*CFrame.new(0.65, -0.4, 1)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	larmTween:Play()
+	wait(0.65)
+	rifleWeldGoal = {C1 = CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)}
+	rarmTweenGoal = {C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)}
+	larmTweenGoal = {C1 = CFrame.new(0.7,0,0.375)*CFrame.Angles(math.rad(0),math.rad(90),math.rad(-90))}
+	rifleTween = tweenService:Create(script.Parent["Meshes/Main"].rWeld,tweenInfo,rifleWeldGoal)
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	rarmTween = tweenService:Create(script.rarmWeld,tweenInfo,rarmTweenGoal)
+	rifleTween:Play()
+	larmTween:Play()
+	wait(0.5)
+	quickinfo = TweenInfo.new(0.2)
+	hipheightGoal = {HipHeight = 0}
+	larmTweenGoal = {C1 = CFrame.new(1.5,0,0)}
+	rlegTweenGoal = {C1 = CFrame.new(-0.5,2,0)}
+	llegTweenGoal = {C1 = CFrame.new(0.5,2,0)}
+	larmTween = tweenService:Create(script.larmWeld,tweenInfo,larmTweenGoal)
+	hipheightTween = tweenService:Create(script.Parent.Parent.Humanoid,quickinfo,hipheightGoal)
+	rlegTween = tweenService:Create(script.rlegWeld,quickinfo,rlegTweenGoal)
+	llegTween = tweenService:Create(script.llegWeld,quickinfo,llegTweenGoal)
+	larmTween:Play()
+	rlegTween:Play()
+	llegTween:Play()
+	hipheightTween:Play()
+	wait(0.4)
+	script.rlegWeld.Enabled = false
+	script.llegWeld.Enabled = false
+	currentPos = "attention"
+end
+
+script.Parent.Equipped:Connect(function()
+	generateLimbWelds()
+	local newWeld = Instance.new("Weld")
+	newWeld.Part1 = script.Parent["Meshes/Main"]
+	newWeld.Part0 = script.Parent.Parent.HumanoidRootPart
+	newWeld.Parent = script.Parent["Meshes/Main"]
+	newWeld.C1 = script.Parent.Parent.HumanoidRootPart.CFrame
+	newWeld.Name = "rWeld"
+	wait()
+	script.larmWeld.Enabled = true
+	script.rarmWeld.Enabled = true
+	script.rarmWeld.C1 = CFrame.new(-1.5,0,0)*CFrame.Angles(math.rad(-5),0,0)
+	newWeld.C1 = script.Parent["Meshes/Main"].CFrame*CFrame.Angles(math.rad(85),math.rad(180),math.rad(0))*CFrame.new(-1,-0.69,0.7)
+end)
+
+script.Parent.Unequipped:Connect(function()
+	for i,v in pairs(script.Parent["Meshes/Main"]:GetChildren()) do
+		if v:IsA("Weld") then
+			v:Destroy()
+		end
+	end
+	for i,v in pairs(script:GetChildren()) do
+		if v:IsA("Weld") then
+			v:Destroy()
+		end
+	end
+	currentPos = "attention"
+end)
+
+
+script.changePos.OnServerEvent:Connect(function(plr,userInput)
+	if script.Parent.Parent.Name ~= "Backpack" then
+		if currentPos ~= "moving" then
+			if userInput == "Z" then
+				if currentPos == "attention" then
+					atease_Start()
+				end
+				if currentPos == "standeasy" then
+					standeasy_End()
+				end
+			end
+			if userInput == "G" then
+				if currentPos == "atease" then
+					atease_End()
+				end
+				if currentPos == "slopearms" then
+					slopearms_End()
+				end
+				if currentPos == "highport" then
+					highport_End()
+				end
+				if currentPos == "onguard" then
+					onguard_End()
+				end
+				if currentPos == "volley" then
+					volley_End()
+				end
+			end
+			if userInput == "X" then
+				if currentPos == "atease" then
+					standeasy_Start()
+				end
+			end
+			if userInput == "T" then
+				if currentPos == "shoulderleft" then
+					changearms_Shoulder_Right()
+				else if currentPos == "attention" then
+					changearms_Shoulder_Left()
+					end
+				end
+				if currentPos == "sloperight" then
+					changearms_Slope_Left()
+				else if currentPos == "slopearms" then
+						changearms_Slope_Right()
+					end
+				end
+				
+			end
+			if userInput == "N" then
+				if currentPos == "attention" then
+					slopearms_Start()
+				end
+				if currentPos == "presentarms" then
+					presentarms_End()
+				end
+				if currentPos == "slopesalute" then
+					slopesalute_End()
+				end
+			end
+			if userInput == "V" then
+				if currentPos == "slopearms" then
+					presentarms_Start()
+				end
+			end
+			if userInput == "C" then
+				if currentPos == "slopearms" then
+					slopesalute_Start()
+				end
+			end
+			if userInput == "J" then
+				if currentPos == "attention" then
+					highport_Start()
+				end
+			end
+			if userInput == "K" then
+				if currentPos == "attention" then
+					onguard_Start()
+				end
+			end
+			if userInput == "L" then
+				if currentPos == "volley" then
+					volley_Fire()
+				end
+				if currentPos == "attention" then
+					volley_Start()
+				end
+			end
+			if userInput == "B" then
+				if currentPos == "attention" then
+					if script.BayonetFixed.Value == true then
+						unfixBayonets()
+					else
+						fixBayonets()
+					end
+				end
+			end
+		end
+	end
+	script.changePos:FireClient(plr,currentPos)
+end)
+
+
